@@ -8,8 +8,8 @@ const database = require('./database');
 const functionDB = {
   insert() {
     let dados = {
-      name: "forza",
-      price: 10.10
+      name: "days gone",
+      price: 100.10
     }
     database.insert(dados).into("games").then((data) => {
       console.log(data);
@@ -81,11 +81,29 @@ const functionDB = {
     })
   },
   join() {
-    database.select(["games.*", "estudios.name as studios_name"]).table('games').innerJoin("estudios", "estudios.game_id", "games.id").then((data) => {
-      console.log(data);
-    }).catch(err => {
-      console.log(err);
-    });
+    database.select(["games.*", "estudios.name as estudios_name"])
+      .table('games')
+      .innerJoin("estudios", "estudios.game_id", "games.id")
+      // .where("games.id", 5)
+      .then((data) => {
+        let estudiosGameArray = data;
+        let game = {
+          id: 0,
+          name: "",
+          estudios: []
+        }
+        game.id = data[4].id;
+        game.name = data[4].name;
+
+        data.forEach(estudios => {
+          game.estudios.push({
+            nome: estudios.estudios_name,
+          })
+        })
+        console.log(game);
+      }).catch(err => {
+        console.log(err);
+      });
   }
 }
 
